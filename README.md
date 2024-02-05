@@ -17,7 +17,7 @@ NoteMaker is a powerful tool designed to automate the process of creating meetin
 
 1. **Clone the repository**
     ```bash
-    git clone https://github.com/jacklatrobe/NoteMaker.git
+    git clone https://github.com/jacklatrobe/NotesMaker.git
     cd NoteMaker
     ```
 
@@ -58,6 +58,6 @@ NoteMaker is a powerful tool designed to automate the process of creating meetin
 Distributed under the MIT License. 
 
 ## Contact
-Jack Latrobe - Latrobe Consulting Group
-- jack@latrobe.group
-- Project Link: [https://github.com/jacklatrobe/NoteMaker](https://github.com/jacklatrobe/NoteMaker)
+Jack Latrobe - [https://latrobe.group/](Latrobe Consulting Group)
+- Email: jack@latrobe.group
+- Project Link: [https://github.com/jacklatrobe/NotesMaker](https://github.com/jacklatrobe/NotesMaker)
