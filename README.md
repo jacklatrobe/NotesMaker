@@ -1,5 +1,5 @@
-# NoteMaker
-NoteMaker is a powerful tool designed to automate the process of creating meeting minutes from video call transcripts. Utilizing advanced natural language processing capabilities, NoteMaker reads in VTT (Web Video Text Tracks) files, cleans up the transcripts by removing filler words, and summarizes the content. These summaries are then written to text files, making it easy to capture the essence of meetings without manual effort.
+# NotesMaker
+NotesMaker is a powerful tool designed to automate the process of creating meeting minutes from video call transcripts. Utilizing advanced natural language processing capabilities, NoteMaker reads in VTT (Web Video Text Tracks) files, cleans up the transcripts by removing filler words, and summarizes the content. These summaries are then written to text files, making it easy to capture the essence of meetings without manual effort.
 
 ## Features
 - **Transcript Cleanup:** Removes common filler words and non-essential parts of speech to clean up the transcript.
