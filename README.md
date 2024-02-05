@@ -1,36 +1,79 @@
-# NotesMaker
-Note-taking is a critical skill that is essential in almost every aspect of life, from education and work to personal life. However, taking notes is not always an easy task, and it can be time-consuming, especially in large meetings, conferences, or presentations. Additionally, maintaining lengthy notes or transcripts of such events can be overwhelming, and it can be challenging to extract the key points, insights, and action items from such lengthy documents.
+# NoteMaker
 
-This is where NotesMaker comes into play. NotesMaker is a Python tool that can take VTT files and turn them into shorter, cleaner transcripts for GPT summarisation. The tool is designed to make note-taking and summarisation easier, faster, and more efficient. By using NoteMaker, users can extract the most critical information from lengthy transcripts, allowing them to focus on the key takeaways and actions.
+NoteMaker is a powerful tool designed to automate the process of creating meeting minutes from video call transcripts. Utilizing advanced natural language processing capabilities, NoteMaker reads in VTT (Web Video Text Tracks) files, cleans up the transcripts by removing filler words, and summarizes the content. These summaries are then written to text files, making it easy to capture the essence of meetings without manual effort.
 
-One of the significant benefits of NoteMaker is that it can save users a significant amount of time and effort. Instead of manually going through lengthy transcripts to extract the key takeaways, users can simply use NoteMaker to get an accurate summary of the most important points. This feature is especially useful for busy professionals, students, or anyone who attends multiple meetings, conferences or presentations daily.
+## Features
 
-Another benefit of NoteMaker is that it can help users maintain more accurate and consistent notes. The tool ensures that the notes are summarised accurately, removing any room for human error or misinterpretation. Users can also save the summarised notes in the minutes directory, providing a record of the meeting or event for future reference. These minutes can be used to track progress, review action items, and provide a historical record of important events and decisions.
+- **Transcript Cleanup:** Removes common filler words and non-essential parts of speech to clean up the transcript.
+- **Automatic Summarization:** Uses OpenAI's natural language processing to generate concise summaries of each transcript.
+- **Minutes Generation:** Writes the summaries into neatly formatted minutes in text files for easy review and distribution.
 
-## Requirements
+## Getting Started
 
-To run this program, the following dependencies are required:
-- NTLK
-- LangChain
-- OpenAI
-- Python
+### Prerequisites
 
-## File Structure
+- Python 3.8 or later
+- An Azure account with an OpenAI resource created
+- `.env` file with necessary API keys and endpoints
 
-The following files are included in this project:
-- `main.py` - the main program file
-- `requirements.txt` - contains the necessary dependencies to run the program
-- `transcripts/*.vtt` - upload Teams VTT transcripts here
-- `minutes/*.txt` - program writes meeting minutes here
+### Installation
 
-## Usage
+1. **Clone the repository**
 
-The first time you run NoteTaker, you will need to uncomment the NTLK download line in main.py, then comment it out again once complete.
+    ```bash
+    git clone https://github.com/jacklatrobe/NoteMaker.git
+    cd NoteMaker
+    ```
 
-1. Clone the repository to your local machine.
-2. Install the dependencies by running `pip install -r requirements.txt` in the terminal.
-3. Add the VTT files to the `transcripts` directory.
-4. Run `main.py` to generate the meeting minutes. The program will create a new text file in the `minutes` directory for each VTT file found in the `transcripts` directory. 
+2. **Install dependencies**
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+3. **Set up environment variables**
+
+Create a `.notesmaker.env` file in the root directory with the following content, replacing placeholders with your actual Azure OpenAI resource values:
+
+    ```
+    API_VERSION=<YOUR_API_VERSION>
+    BASE_URL=<YOUR_BASE_URL>
+    API_KEY=<YOUR_API_KEY>
+    DEPLOYMENT_NAME=<DEPLOYMENT_NAME>
+    CHUNK_SIZE=7500
+    ```
+
+
+### Usage
+
+1. **Prepare your transcripts**
+
+Place your `.vtt` transcript files in the `./transcripts` directory.
+
+2. **Run NoteMaker**
+
+Execute the main script to process the transcripts and generate minutes:
+
+    ```
+    python notemaker.py
+    ```
+
+
+Processed minutes will be saved in the `./minutes` directory, with each summary corresponding to its source transcript file.
+
+## Configuration
+
+- `API_VERSION`, `BASE_URL`, `API_KEY`, `DEPLOYMENT_NAME`: Configure these variables in your `.notesmaker.env` file to match your Azure OpenAI setup.
+- `CHUNK_SIZE`: Adjust the chunk size for processing large transcripts. The default is set to 7500 but can be modified based on the size of your transcripts and the desired level of detail in summaries - this will primarily be limited by the maximum token model available to you.
+- A note on LLMs - this is built to use Azure OpenAI, but porting this to use another LLM via LangChain's wrapper should be quickly possible.
 
 ## License
-Created by the Latrobe Consulting Grouper under an MIT license: https://opensource.org/license/mit/ 
+
+Distributed under the MIT License. 
+
+## Contact
+
+Jack Latrobe - Latrobe Consulting Group
+jack@latrobe.group
+
+Project Link: [https://github.com/jacklatrobe/NoteMaker](https://github.com/jacklatrobe/NoteMaker)
