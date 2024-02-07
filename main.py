@@ -22,7 +22,6 @@ API_KEY = os.getenv("API_KEY")
 DEPLOYMENT_NAME = os.getenv("DEPLOYMENT_NAME")
 CHUNK_SIZE = int(os.getenv("CHUNK_SIZE"))
 
-
 # Define the directories
 transcripts_dir = './transcripts'
 minutes_dir = './minutes'
@@ -54,7 +53,7 @@ def create_jobs_from_transcripts(transcripts_dir, minutes_dir):
                     "transcript_filepath" : trans_filepath,
                     "minutes_filepath" : mins_filepath
                 })
-        return jobs
+    return jobs
     
 def create_transcript_from_vtt(transcript_path):
     transcript = []
@@ -92,8 +91,8 @@ def summarise_chunk(llm, chunk):
     # Define summary prompt
     prompt_template = """The following are lines from the transcript of a video call
     {chunk}
-    Group lines by the same speaker or topic together, and produce a succinct bullet point summary of this part of the discussion.
-    Bullet points:"""
+    Convert this into a list of discussion points in the format 'Name discussed topic'. Condense similar lines or topics where you can into single lines.
+    Condensed bullet point list:"""
 
     # Define chain for minutes summary
     prompt  = PromptTemplate.from_template(prompt_template)
@@ -105,35 +104,40 @@ def summarise_chunk(llm, chunk):
 
 def get_title(llm, text: str):
     # Define summary prompt
-    prompt_template = """The following are lines from the transcript of a video call
+    prompt_template = """The following are lines from the transcript of a video call:##
     {text}
-    Based on these lines, suggest a short title that accurately captures the content of the call.
-    Helpful Answer:"""
+    Based on these lines, suggest a short title that accurately captures the purpose of the meeting or discussion based on the content.
+    Proposed meeting title:"""
     # Define LLM chain for title summary
     prompt  = PromptTemplate.from_template(prompt_template)
     llm_chain = LLMChain(llm=llm, prompt=prompt)
 
-    # Only feed in the first chunk of the final transcript
-    text_splitter = CharacterTextSplitter(
-        separator="\n\n",
-        chunk_size=CHUNK_SIZE,
-        chunk_overlap=200,
-        length_function=len,
-        is_separator_regex=False,
-    )
-    texts = text_splitter.create_documents(text)
-
-    title = llm_chain.run(text=str(texts[0].page_content))
+    title = llm_chain.run(text=text)
 
     logging.info("Generated summary of minutes for title: {title}".format(title=title))
     return title
 
+def get_summary(llm, text: str):
+    # Define summary prompt
+    prompt_template = """The following are minutes from a video call:##
+    {text}
+    Based on these lines, write a two to three sentence summary about the discussion topic and any outcomes.
+    Meeting summary:"""
+    # Define LLM chain for title summary
+    prompt  = PromptTemplate.from_template(prompt_template)
+    llm_chain = LLMChain(llm=llm, prompt=prompt)
+
+    summary = llm_chain.run(text=text)
+
+    return summary
+
 def format_minutes(llm, minutes, names):
     # Generate a title from the summarised minutes
     title = get_title(llm, minutes)
+    summary = get_summary(llm, minutes)
 
     # Format the final minutes doc
-    minutes_doc = "Title: {title}\n\nAttendees:\n{names}\n\nMinutes:\n{minutes}".format(title=title, names=names, minutes=minutes)
+    minutes_doc = "Title: {title}\n\nAttendees:\n{names}\n\nSummary: {summary}\n\nMinutes:\n{minutes}".format(title=title, names=names, summary=summary, minutes=minutes)
     return minutes_doc
 
 def write_minutes(minutes_path, text):
