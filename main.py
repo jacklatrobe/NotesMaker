@@ -60,30 +60,47 @@ def create_transcript_from_vtt(transcript_path):
     with open(transcript_path, 'r') as f:
             # Read the file line by line
             for line in f:
-                # Define the regex pattern
+                # Define the regex pattern for lastname, firstname
                 pattern = r'<v (.*?),(.*?)>'
                 # Search for the pattern at the start of the line
                 match = re.match(pattern, line)
+                # Strip out the actual text caption
                 caption = re.sub(pattern, '', line)
                 caption = caption.replace("</v>","")
+                # Split the caption into tokens
+                words = caption.split(" ")
+                # Remove all tokens that are not alphabetic
+                words = [word for word in words if word.isalnum()]
+                # strip out any filler words.
+                words = [word for word in words if word.lower() not in filler_words]
+                # Join the words back into a sentence
+                sentence = ' '.join(words)
                 # If the pattern was found
                 if match:
                     # Extract the last name and first name
                     last_name, first_name = match.groups()
-                    # Split the line into tokens
-                    words = caption.split(" ")
-                    # remove all tokens that are not alphabetic
-                    words = [word for word in words if word.isalpha()]
-                    # strip out any filler words.
-                    words = [word for word in words if word.lower() not in filler_words]
-                    # Join the words back into a sentence
-                    sentence = ' '.join(words)
                     if len(sentence) > 3:
                         transcript.append({
                             "first_name" : first_name,
                             "last_name" : last_name,
                             "message_text" : sentence
                         })
+                else:
+                    # Define the regex pattern for firstname lastname
+                    pattern = r'<v (.*?)>'
+                    match = re.match(pattern, line)
+                    if match:
+                        name = match.group()
+                        # Extract the last name and first name
+                        names = name.split(" ")
+                        first_name = names.pop(0)
+                        last_name = " ".join(names)
+                        if len(sentence) > 3:
+                            transcript.append({
+                                "first_name" : first_name,
+                                "last_name" : last_name,
+                                "message_text" : sentence
+                            })
     return transcript
 
 def summarise_chunk(llm, chunk):
@@ -91,7 +108,7 @@ def summarise_chunk(llm, chunk):
     # Define summary prompt
     prompt_template = """The following are lines from the transcript of a video call
     {chunk}
-    Convert this into a list of discussion points in the format 'Name discussed topic'. Condense similar lines or topics where you can into single lines.
+    Convert this into a list of discussion points in the format '[Name] discussed [topics]'.  Always try to preserve specific facts, names or data points such as numbers or product names.
     Condensed bullet point list:"""
 
     # Define chain for minutes summary
